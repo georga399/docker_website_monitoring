@@ -1,0 +1,37 @@
+name: Cloud_and_Networks
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push image from nginx_service
+      uses: docker/build-push-action@v6
+      with:
+        context: ./nginx_service
+        file: ./nginx_service/Dockerfile
+        push: true
+        tags: georga399/nginx_service:latest
+
+    - name: Build and push image from watcher_service
+      uses: docker/build-push-action@v6
+      with:
+        context: ./watcher_service
+        file: ./watcher_service/Dockerfile
+        push: true
+        tags: georga399/watcher_service:latest

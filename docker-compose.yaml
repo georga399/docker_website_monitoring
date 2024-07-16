@@ -1,0 +1,19 @@
+services:
+  nginx:
+    build: ./nginx_service
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - nginx-watcher-network
+
+  watcher:
+    build: ./watcher_service
+    command: bash -c "/usr/local/bin/healthcheck.sh"
+    ports:
+      - "587:587"
+    networks:
+      - nginx-watcher-network
+
+networks:
+  nginx-watcher-network: {} 
